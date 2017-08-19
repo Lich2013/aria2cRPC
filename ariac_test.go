@@ -18,7 +18,7 @@ func TestRPC_Ping(t *testing.T) {
 
 func TestRPC_AddUri(t *testing.T) {
 	urls := []string{
-		"magnet:?xt=urn:btih:44c68ca746f65291bc4139429e5c13d460323483",
+		"magnet:?xt=urn:btih:699c59f13bf572f9917d8738f638a9f91e08c0d9",
 	}
 	rpc.AddUri(urls)
 }

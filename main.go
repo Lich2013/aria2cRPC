@@ -11,7 +11,7 @@ type Data struct {
 	Jsonrpc string `json:"jsonrpc"`
 	Id      string `json:"id"`
 	Method  string `json:"method"`
-	Params  []string `json:"params"`
+	Params  []interface{} `json:"params"`
 }
 
 type RPC struct {
@@ -26,13 +26,13 @@ type RPC struct {
 func (this RPC) Init(args ...string) *RPC {
 	this.Host = Host
 	this.URI = "http://" + Host + "/jsonrpc"
-	this.Token = Token
+	this.Token = "token:" + this.Token
 	this.RpcVersion = RpcVersion
 	this.Header = Header
 	for index, v := range args {
 		switch index {
 		case 0:
-			this.Token = v
+			this.Token = "token:" + v
 		case 1:
 			this.Host = v
 			this.URI = "http://" + v + "/jsonrpc"
@@ -42,9 +42,8 @@ func (this RPC) Init(args ...string) *RPC {
 	}
 
 	this.Data.Jsonrpc = this.RpcVersion
-	this.Data.Params = []string{}
 	if len(this.Token) > 0 {
-		this.Data.Params = append(this.Data.Params, "token:"+this.Token)
+		this.Data.Params = append(this.Data.Params, this.Token)
 	}
 	return &this
 }

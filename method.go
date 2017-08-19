@@ -38,10 +38,20 @@ func (this RPC) Ping() error {
 		}
 		return errors.New(errInfo.Message)
 	}
+	this.Data.Params = []interface{}{this.Token}
+	fmt.Println(this)
 	return nil
 }
 
-func (this RPC) Requset() *Ret {
+func (this RPC) AddUri(uri []string) Ret {
+	this.Data.Method = "aria2.addUri"
+	this.Data.Params = append(this.Data.Params, uri)
+	data := this.Requset()
+	fmt.Println(data)
+	return data
+}
+
+func (this RPC) Requset() Ret {
 	defer func() {
 		if e := recover(); e != nil {
 			fmt.Fprint(os.Stderr, e)
@@ -52,7 +62,9 @@ func (this RPC) Requset() *Ret {
 		fmt.Fprint(os.Stderr, err.Error())
 		panic(err)
 	}
-	resp, err := http.Post(this.URI, this.Header,bytes.NewBuffer(tmp))
+	resp, err := http.Post(this.URI, this.Header, bytes.NewBuffer(tmp))
+	fmt.Println(resp, err)
+
 	defer resp.Body.Close()
 	if err != nil {
 		fmt.Fprint(os.Stderr, err.Error())
@@ -69,5 +81,5 @@ func (this RPC) Requset() *Ret {
 		fmt.Fprint(os.Stderr, err.Error())
 		panic(err)
 	}
-	return data
+	return *data
 }

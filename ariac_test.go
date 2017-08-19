@@ -2,6 +2,7 @@ package aria2cRPC
 
 import (
 	"testing"
+	"fmt"
 )
 
 var (
@@ -20,5 +21,10 @@ func TestRPC_AddUri(t *testing.T) {
 	urls := []string{
 		"magnet:?xt=urn:btih:699c59f13bf572f9917d8738f638a9f91e08c0d9",
 	}
-	rpc.AddUri(urls)
+	s, err := rpc.AddUri(urls)
+	if err != nil {
+		t.Log(err.Error())
+		t.Fail()
+	}
+	fmt.Println(s)
 }

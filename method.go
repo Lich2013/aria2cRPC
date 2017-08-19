@@ -39,16 +39,19 @@ func (this RPC) Ping() error {
 		return errors.New(errInfo.Message)
 	}
 	this.Data.Params = []interface{}{this.Token}
-	fmt.Println(this)
 	return nil
 }
 
-func (this RPC) AddUri(uri []string) Ret {
+func (this RPC) AddUri(uri []string) (string, error) {
 	this.Data.Method = "aria2.addUri"
 	this.Data.Params = append(this.Data.Params, uri)
 	data := this.Requset()
-	fmt.Println(data)
-	return data
+	if data.Error != nil {
+		e, _ := json.Marshal(data.Error)
+		return "", errors.New(string(e))
+	}
+	d, _ := json.Marshal(data.Result)
+	return string(d), nil
 }
 
 func (this RPC) Requset() Ret {
@@ -63,8 +66,6 @@ func (this RPC) Requset() Ret {
 		panic(err)
 	}
 	resp, err := http.Post(this.URI, this.Header, bytes.NewBuffer(tmp))
-	fmt.Println(resp, err)
-
 	defer resp.Body.Close()
 	if err != nil {
 		fmt.Fprint(os.Stderr, err.Error())
